@@ -22,11 +22,11 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Import Data
-d3.csv("assets/data/data.csv").then(function(hairData) {
+d3.csv("assets/data/data.csv").then(function(generalData) {
 
     // Step 1: Parse Data/Cast as numbers
     // ==============================
-    hairData.forEach(function(data) {
+    generalData.forEach(function(data) {
       data.income = +data.income;
       data.poverty = +data.poverty;
     });
@@ -34,11 +34,11 @@ d3.csv("assets/data/data.csv").then(function(hairData) {
     // Step 2: Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
-      .domain([d3.min(hairData, d => d.income) -1000, d3.max(hairData, d => d.income)])
+      .domain([d3.min(generalData, d => d.income) -1000, d3.max(generalData, d => d.income)])
       .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-      .domain([0, d3.max(hairData, d => d.poverty)])
+      .domain([0, d3.max(generalData, d => d.poverty)])
       .range([height, 0]);
 
     // Step 3: Create axis functions
@@ -58,7 +58,7 @@ d3.csv("assets/data/data.csv").then(function(hairData) {
     // Step 5: Create Circles
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
-    .data(hairData)
+    .data(generalData)
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d.income))
@@ -68,7 +68,7 @@ d3.csv("assets/data/data.csv").then(function(hairData) {
     .attr("opacity", ".5");
 
     var circlesGroup = chartGroup.selectAll("text")
-    .data(hairData)
+    .data(generalData)
     .enter()
     .append("text")
     .attr("dx", d => xLinearScale(d.income))
@@ -82,7 +82,7 @@ d3.csv("assets/data/data.csv").then(function(hairData) {
       .attr("class", "d3-tip")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.state}<br>Hair length: ${d.income}<br>Hits: ${d.num_hits}`);
+        return (`${d.state}<br>Income: ${d.income}<br>Poverty: ${d.poverty}`);
       });
 
     // Step 7: Create tooltip in the chart
