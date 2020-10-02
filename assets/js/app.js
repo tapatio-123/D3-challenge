@@ -27,18 +27,18 @@ d3.csv("assets/data/data.csv").then(function(hairData) {
     // Step 1: Parse Data/Cast as numbers
     // ==============================
     hairData.forEach(function(data) {
-      data.hair_length = +data.hair_length;
-      data.num_hits = +data.num_hits;
+      data.income = +data.income;
+      data.poverty = +data.poverty;
     });
 
     // Step 2: Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
-      .domain([20, d3.max(hairData, d => d.hair_length)])
+      .domain([d3.min(hairData, d => d.income) -1000, d3.max(hairData, d => d.income)])
       .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-      .domain([0, d3.max(hairData, d => d.num_hits)])
+      .domain([0, d3.max(hairData, d => d.poverty)])
       .range([height, 0]);
 
     // Step 3: Create axis functions
@@ -61,19 +61,28 @@ d3.csv("assets/data/data.csv").then(function(hairData) {
     .data(hairData)
     .enter()
     .append("circle")
-    .attr("cx", d => xLinearScale(d.hair_length))
-    .attr("cy", d => yLinearScale(d.num_hits))
+    .attr("cx", d => xLinearScale(d.income))
+    .attr("cy", d => yLinearScale(d.poverty))
     .attr("r", "15")
-    .attr("fill", "pink")
+    .attr("fill", "lightgreen")
+    .attr("opacity", ".5");
+
+    var circlesGroup = chartGroup.selectAll("text")
+    .data(hairData)
+    .enter()
+    .append("text")
+    .attr("dx", d => xLinearScale(d.income))
+    .attr("dy", d => yLinearScale(d.poverty))
+    .attr("fill", "lightgreen")
     .attr("opacity", ".5");
 
     // Step 6: Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
-      .attr("class", "tooltip")
+      .attr("class", "d3-tip")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.rockband}<br>Hair length: ${d.hair_length}<br>Hits: ${d.num_hits}`);
+        return (`${d.state}<br>Hair length: ${d.income}<br>Hits: ${d.num_hits}`);
       });
 
     // Step 7: Create tooltip in the chart
@@ -97,12 +106,12 @@ d3.csv("assets/data/data.csv").then(function(hairData) {
       .attr("x", 0 - (height / 2))
       .attr("dy", "1em")
       .attr("class", "axisText")
-      .text("Number of Billboard 100 Hits");
+      .text("Poverty");
 
     chartGroup.append("text")
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
       .attr("class", "axisText")
-      .text("Hair Metal Band Hair Length (inches)");
+      .text("Income");
   }).catch(function(error) {
     console.log(error);
   });
