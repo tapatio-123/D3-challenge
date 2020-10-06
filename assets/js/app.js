@@ -73,8 +73,12 @@ d3.csv("assets/data/data.csv").then(function(generalData) {
     .append("text")
     .attr("dx", d => xLinearScale(d.income))
     .attr("dy", d => yLinearScale(d.poverty))
-    .attr("fill", "lightgreen")
-    .attr("opacity", ".5");
+    .attr("fill", "black")
+    // .attr("opacity", ".5")
+    // .attr("font-size", "15px")
+    .attr("text-anchor", "middle")
+    .text(function(d){return d.abbr});
+
 
     // Step 6: Initialize tool tip
     // ==============================
